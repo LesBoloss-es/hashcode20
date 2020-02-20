@@ -4,7 +4,8 @@ module Log = (val Logger.create "common.problem" : Logs.LOG)
 type book =
   { bid : int ;
     score : int ;
-    mutable selected : bool }
+    mutable selected : bool ;
+    mutable scanned : bool}
 [@@deriving show]
 
 type library =
@@ -73,7 +74,7 @@ let from_channel ~name (ichan : in_channel) : t =
         input_line ichan
         |> String.split_on_char ' '
         |> List.map ios
-        |> List.mapi (fun bid score -> {bid; score; selected=false})
+        |> List.mapi (fun bid score -> {bid; score; selected=false; scanned = false})
         |> Array.of_list
       in
       let nb_books = ios nb_books in
