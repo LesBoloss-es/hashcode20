@@ -1,4 +1,5 @@
 (library
  (name common)
  (public_name hashcode20.common)
- (libraries logs lwt unix))
+ (libraries logs lwt unix)
+ (preprocess (pps ppx_deriving.std)))
