@@ -6,6 +6,12 @@ type t = { name : string }
 
 let name problem = problem.name
 
+(* Analysing *)
+
+let analyse problem =
+  (* FIXME *)
+  Log.info (fun m -> m "This is the analysis of problem `%s`." (name problem))
+
 (* Parsing *)
 
 let from_channel ~name (_ichan : in_channel) : t =

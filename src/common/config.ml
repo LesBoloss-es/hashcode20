@@ -1,5 +1,6 @@
 open ExtPervasives
 
+let analyse = ref false
 let stop = ref true
 
 let solutions_dir = ref "solutions"
@@ -19,6 +20,7 @@ let specs =
     "--problems",  Set_string problems_dir,  spf "DIR Sets the problems directory to DIR. This will only be used if no problems are given in the arguments (default: %s)" !problems_dir ;
     "--workers",   Set_int    nb_workers,    spf "NB Sets the number of workers to NB (default: %d)" !nb_workers ;
 
+    "--analyse",   Set analyse,              spf " Sets the tool in analyse mode" ;
     "--non-stop",  Clear stop,               spf " Sets the tool in non-stop mode" ;
 
     "--quiet",     Unit (set loglevel Logs.Warning), spf " Sets quiet mode";
