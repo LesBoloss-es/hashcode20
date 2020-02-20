@@ -9,7 +9,7 @@ type book =
 type library =
   { lid : int ;
     content : book array ;
-    content_by_bid : int array; (* indirection table *)
+    content_by_bid : (int, int) Hashtbl.t [@opaque]; (* indirection table *)
     signup_time : int ;
     books_per_day : int }
 [@@deriving show]
@@ -54,9 +54,11 @@ let analyse problem =
 (* Parsing *)
 
 let from_channel ~name (ichan : in_channel) : t =
+  Log.debug (fun m -> m "Parsing problem: %s" name);
   match input_line ichan |> String.split_on_char ' ' with
   | [nb_books; nb_libraries; days] ->
     (
+      Log.debug (fun m -> m "Getting books");
       let books =
         input_line ichan
         |> String.split_on_char ' '
@@ -66,6 +68,7 @@ let from_channel ~name (ichan : in_channel) : t =
       in
       let nb_books = ios nb_books in
       assert (Array.length books = nb_books);
+      Log.debug (fun m -> m "Getting libraries");
       let libraries =
         let libraries = ref [] in
         for lid = 0 to ios nb_libraries - 1 do
@@ -80,9 +83,9 @@ let from_channel ~name (ichan : in_channel) : t =
                 |> Array.of_list
               in
               assert (Array.length content = ios nb_content);
-              let content_by_bid = Array.make nb_books (-1) in
+              let content_by_bid = Hashtbl.create (Array.length content) in
               content |> Array.iteri (fun i book ->
-                  content_by_bid.(book.bid) <- i
+                  Hashtbl.add content_by_bid book.bid i
                 );
               let signup_time = ios signup_time in
               let books_per_day = ios books_per_day in
@@ -95,6 +98,7 @@ let from_channel ~name (ichan : in_channel) : t =
         |> Array.of_list
       in
       let days = ios days in
+      Log.debug (fun m -> m "Returning");
       { name; books; libraries; days }
     )
   | _ -> assert false
