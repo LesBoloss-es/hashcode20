@@ -24,10 +24,32 @@ let name problem = problem.name
 
 (* Analysing *)
 
-let analyse problem =
-  (* FIXME *)
-  Log.info (fun m -> m "This is the analysis of problem `%s`." (name problem))
+let rec list_hdn n l =
+  if n = 0 then []
+  else match l with
+    | [] -> []
+    | h::q -> h :: list_hdn (n-1) q
 
+let analyse problem =
+  (* Log.debug (fun m -> m "\n%a" pp problem); *)
+  Log.info (fun m -> m "This is the analysis of problem `%s`." (name problem));
+  Log.info (fun m -> m "Days: %d" problem.days);
+  Log.info (fun m -> m "10 top libraries per books-per-day: %s"
+               (problem.libraries
+                |> Array.to_list
+                |> List.sort (fun l1 l2 -> -compare l1.books_per_day l2.books_per_day)
+                |> list_hdn 10
+                |> List.map (fun l -> (soi l.books_per_day) ^ "/" ^ (soi l.signup_time))
+                |> String.concat " "));
+  Log.info (fun m -> m "10 top libraries per signup-time: %s"
+               (problem.libraries
+                |> Array.to_list
+                |> List.sort (fun l1 l2 -> -compare l1.signup_time l2.signup_time)
+                |> list_hdn 10
+                |> List.map (fun l -> (soi l.books_per_day) ^ "/" ^ (soi l.signup_time))
+                |> String.concat " "));
+  Log.info (fun m -> m "-----")
+    
 (* Parsing *)
 
 let from_channel ~name (ichan : in_channel) : t =
