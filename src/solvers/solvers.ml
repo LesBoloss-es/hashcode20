@@ -17,7 +17,5 @@ open Common.Solver
 (* Defining a configurator sets repeatable to true. *)
 
 let all = [
-  make ~name:"dummy" Dummy.dummy ;
-  make ~name:"dummy_repeatable" ~repeatable:true Dummy.dummy ;
-  make ~name:"dummy_configured" ~configurator:Dummy.configure Dummy.dummy ;
+  make ~name:"greedy" Greedy.solve;
 ]
