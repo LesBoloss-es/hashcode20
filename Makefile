@@ -5,7 +5,7 @@ build:
 	[ -e bin ] || ln -s _build/install/default/bin bin
 
 zip: clean
-	zip -9 -r sources.zip *
+	zip -9 -r src.zip src
 
 clean:
 	dune clean
