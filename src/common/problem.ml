@@ -5,7 +5,8 @@ type book =
   { bid : int ;
     score : int ;
     mutable selected : bool ;
-    mutable scanned : bool}
+    mutable scanned : bool ;
+    mutable sharing : int }
 [@@deriving show]
 
 type library =
@@ -74,7 +75,7 @@ let from_channel ~name (ichan : in_channel) : t =
         input_line ichan
         |> String.split_on_char ' '
         |> List.map ios
-        |> List.mapi (fun bid score -> {bid; score; selected=false; scanned = false})
+        |> List.mapi (fun bid score -> {bid; score; selected=false; scanned=false; sharing=0})
         |> Array.of_list
       in
       let nb_books = ios nb_books in
@@ -89,7 +90,10 @@ let from_channel ~name (ichan : in_channel) : t =
               let content =
                 input_line ichan
                 |> String.split_on_char ' '
-                |> List.map (fun bid -> books.(ios bid))
+                |> List.map (fun bid ->
+                    let book = books.(ios bid) in
+                    book.sharing <- book.sharing + 1;
+                    book)
                 |> List.sort (fun b1 b2 -> - compare b1.score b2.score) (* Sort from biggest to smallest *)
                 |> Array.of_list
               in
