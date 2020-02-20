@@ -38,11 +38,17 @@ let convert_problem problem =
   {my_libs; problem}
 
 let exclude_from ?(scanned=false) library book =
-  if scanned then begin
-    library.library.content.(book.bid) <- {book with score = 0};
-    library.score <- library.score - book.score;
-  end;
-  library.selection_score <- library.selection_score - book.score
+  let content = library.library.content in
+  let content_indir = library.library.content_by_bid in
+  try
+    let idx = Hashtbl.find content_indir book.bid in
+    if scanned then begin
+      content.(idx) <- {book with score = 0};
+      library.score <- library.score - book.score;
+    end;
+    library.selection_score <- library.selection_score - book.score
+  with
+    Not_found -> ()
 
 let exclude_all_books_from_library ?(scanned=false) signed_library library =
   let books = signed_library.library.content in
@@ -95,18 +101,24 @@ let solve_library problem library days =
   (library.library, books)
 
 let rec solve_problem problem day =
+  Log.debug (fun fmt -> fmt "day %i/%i" day problem.problem.days);
   match best_library_to_signup problem with
   | None -> []
   | Some lib -> begin
+    Log.debug (fun fmt -> fmt "library found");
     let signup = lib.library.signup_time in
     let rem_days = problem.problem.days - day in
     if rem_days > signup then begin
+      Log.debug (fun fmt -> fmt "signing up");
       lib.signed_up_since <- day;
       let solved = solve_library problem lib rem_days in
+      Log.debug (fun fmt -> fmt "solved library");
       solved :: (solve_problem problem (day + signup))
     end else []
   end
 
 let solve problem =
   let problem = convert_problem problem in
-  solve_problem problem 0
+  let solution = solve_problem problem 0 in
+  Log.debug (fun fmt -> fmt "solution found");
+  solution
