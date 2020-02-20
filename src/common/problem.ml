@@ -1,11 +1,14 @@
 (* open ExtPervasives *)
 module Log = (val Logger.create "common.problem" : Logs.LOG)
 
-type book = int
+type book =
+  { bid : int ;
+    score : int }
 [@@deriving show]
 
 type library =
-  { content : book array ;
+  { lid : int ;
+    content : book array ;
     signup_time : int ;
     books_per_day : int }
 [@@deriving show]

@@ -1,7 +1,7 @@
 (* open ExtPervasives *)
 module Log = (val Logger.create "common.solution" : Logs.LOG)
 
-type t = unit
+type t = (Problem.library * Problem.book list) list
 [@@deriving show]
 
 let to_channel ochan solution : unit =
