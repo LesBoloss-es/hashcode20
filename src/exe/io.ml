@@ -59,14 +59,20 @@ module Solution = struct
   let write_if_better ~problem ~solver solution =
     let name = Problem.name problem in
     with_lock ~name @@ fun () ->
+    Log.debug (fun m -> m "Computing solution");
     let score = Solution.score problem solution in
+    Log.debug (fun m -> m "Reading previous score");
     let score' = read_score ~name in
     if score > score' then
       (
+        Log.debug (fun m -> m "New score is better: replacing");
         write_score ~name score;
         write_solver_name ~name solver;
         write_solution ~name solution;
       )
     else if score = score' then
-      add_solver_name ~name solver
+      (
+        Log.debug (fun m -> m "Same score as before: adding new solver name");
+        add_solver_name ~name solver
+      )
 end

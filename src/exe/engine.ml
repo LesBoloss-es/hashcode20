@@ -19,6 +19,7 @@ let run_solver_on_problem solver problem =
         Solver.configure solver;
         (* No need to copy problem, even if it is mutable, because we are in a fork. *)
         let solution = Solver.solve solver problem in
+        Log.debug (fun m -> m "Got solution from solver; writing if better");
         Io.Solution.write_if_better ~problem ~solver solution;
         exit 0
       with
