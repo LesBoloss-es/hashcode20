@@ -1,0 +1,16 @@
+## Emacs
+*~
+*#
+
+## Dune
+/_build
+/*.install
+*.merlin
+
+## Project
+/bin
+/solutions/*.lock
+/sources.zip
+
+## General
+!.gitkeep

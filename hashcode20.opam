@@ -1,0 +1,21 @@
+opam-version: "2.0"
+
+name: "hashcode20"
+synopsis: "Our contribution to the Google HashCode in 2020"
+
+homepage: "https://github.com/LesBoloss-es/hashcode20"
+bug-reports: "https://github.com/LesBoloss-es/hashcode20/issues"
+
+authors: [
+  "Victor Lanvin <victor.lanvin@irif.fr>"
+  "Nicolas Jeannerod <nicolas.jeannerod@irif.fr>"
+]
+maintainer: "Nicolas Jeannerod <nicolas.jeannerod@irif.fr>"
+
+depends: [
+  "dune"          {build}
+  "logs"
+  "lwt"
+  "ocaml"         {= "4.09.0"}
+  "ppx_deriving"  {build}
+]

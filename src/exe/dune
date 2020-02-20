@@ -1,0 +1,5 @@
+(executable
+ (name main)
+ (public_name hashcode20)
+ (libraries hashcode20.common hashcode20.solvers lwt.unix)
+ (preprocess (pps ppx_deriving.std)))
