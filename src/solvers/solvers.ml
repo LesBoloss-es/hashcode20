@@ -17,5 +17,6 @@ open Common.Solver
 (* Defining a configurator sets repeatable to true. *)
 
 let all = [
-  make ~name:"greedy" Greedy.solve;
+  (* make ~name:"greedy" Greedy.solve; *)
+  make ~name:"niols" Niols.solve;
 ]

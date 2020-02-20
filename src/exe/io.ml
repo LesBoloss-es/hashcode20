@@ -58,6 +58,7 @@ module Solution = struct
 
   let write_if_better ~problem ~solver solution =
     let name = Problem.name problem in
+    Log.debug (fun m -> m "Getting lock");
     with_lock ~name @@ fun () ->
     Log.debug (fun m -> m "Computing score");
     let score = Solution.score problem solution in

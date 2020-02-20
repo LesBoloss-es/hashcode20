@@ -34,6 +34,12 @@ let rec list_tln n l =
     | _::q -> list_tln (n-1) q
 
 let score problem solution =
+  Log.debug (fun m -> m "Computing score");
+  (* Run checks *)
+  solution |> List.iter (fun (_library, books) ->
+      if books = [] then
+        failwith "books cannot be empty");
+  (* Compute score *)
   let signed_up_libraries = ref [] in
   let non_signed_up_libraries = ref solution in
   let current_signing_up = ref 0 in
