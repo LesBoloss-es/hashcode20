@@ -9,6 +9,7 @@ type book =
 type library =
   { lid : int ;
     content : book array ;
+    content_by_bid : int array; (* indirection table *)
     signup_time : int ;
     books_per_day : int }
 [@@deriving show]
@@ -49,7 +50,7 @@ let analyse problem =
                 |> List.map (fun l -> (soi l.books_per_day) ^ "/" ^ (soi l.signup_time))
                 |> String.concat " "));
   Log.info (fun m -> m "-----")
-    
+
 (* Parsing *)
 
 let from_channel ~name (ichan : in_channel) : t =
@@ -63,7 +64,8 @@ let from_channel ~name (ichan : in_channel) : t =
         |> List.mapi (fun bid score -> {bid; score})
         |> Array.of_list
       in
-      assert (Array.length books = ios nb_books);
+      let nb_books = ios nb_books in
+      assert (Array.length books = nb_books);
       let libraries =
         let libraries = ref [] in
         for lid = 0 to ios nb_libraries - 1 do
@@ -78,9 +80,13 @@ let from_channel ~name (ichan : in_channel) : t =
                 |> Array.of_list
               in
               assert (Array.length content = ios nb_content);
+              let content_by_bid = Array.make nb_books (-1) in
+              content |> Array.iteri (fun i book ->
+                  content_by_bid.(book.bid) <- i
+                );
               let signup_time = ios signup_time in
               let books_per_day = ios books_per_day in
-              libraries := { lid; content; signup_time; books_per_day } :: !libraries
+              libraries := { lid; content; content_by_bid; signup_time; books_per_day } :: !libraries
             )
           | _ -> assert false
         done;
