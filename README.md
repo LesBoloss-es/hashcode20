@@ -12,6 +12,7 @@ Clone this project:
 Prepare OPAM:
 
     opam switch import --switch hashcode20 opamswitch
+    opam switch hashcode20
     eval $(opam env)
 
 Check that the project compiles:
