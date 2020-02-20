@@ -9,7 +9,7 @@ zip: clean
 
 clean:
 	dune clean
-	rm -f bin sources.zip
+	rm -f bin src.zip
 	@printf 'Try `make cleanall` to remove also solutions.\n'
 
 cleanall: clean
