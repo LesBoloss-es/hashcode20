@@ -38,7 +38,7 @@ let score problem solution =
   let non_signed_up_libraries = ref solution in
   let current_signing_up = ref 0 in
   let scanned_books = ref [] in
-  for _day = 0 to problem.days do
+  for _day = 0 to problem.days - 1 do
     (* For all signed-up libraries, add their books. *)
     signed_up_libraries :=
       !signed_up_libraries |> List.map (fun (library, books) ->
