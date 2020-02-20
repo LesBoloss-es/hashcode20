@@ -34,7 +34,16 @@ let rec list_hdn n l =
 let analyse problem =
   (* Log.debug (fun m -> m "\n%a" pp problem); *)
   Log.info (fun m -> m "This is the analysis of problem `%s`." (name problem));
+  Log.info (fun m -> m "Books: %d" (Array.length problem.books));
+  Log.info (fun m -> m "Libraries: %d" (Array.length problem.libraries));
   Log.info (fun m -> m "Days: %d" problem.days);
+  Log.info (fun m -> m "10 top libraries per nb of books: %s"
+               (problem.libraries
+                |> Array.to_list
+                |> List.sort (fun l1 l2 -> -compare (Array.length l1.content) (Array.length l2.content))
+                |> list_hdn 10
+                |> List.map (fun l -> soi (Array.length l.content))
+                |> String.concat " "));
   Log.info (fun m -> m "10 top libraries per books-per-day: %s"
                (problem.libraries
                 |> Array.to_list
