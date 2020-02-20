@@ -52,6 +52,7 @@ let from_channel ~name (ichan : in_channel) : t =
                 input_line ichan
                 |> String.split_on_char ' '
                 |> List.map (fun bid -> books.(ios bid))
+                |> List.sort (fun b1 b2 -> - compare b1.score b2.score) (* Sort from biggest to smallest *)
                 |> Array.of_list
               in
               assert (Array.length content = ios nb_content);
@@ -63,7 +64,7 @@ let from_channel ~name (ichan : in_channel) : t =
         done;
         !libraries
         |> List.rev
-        |> Array.of_list 
+        |> Array.of_list
       in
       let days = ios days in
       { name; books; libraries; days }
