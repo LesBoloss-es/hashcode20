@@ -3,9 +3,9 @@ open Problem
 
 module Log = (val Logger.create "solver.greedy" : Logs.LOG)
 
-let simulation_step = 10
+let simulation_step = 5
 
-let steps_per_update = 20
+let steps_per_update = 10
 
 type my_library = {
   library : Problem.library;
@@ -29,11 +29,11 @@ let library_score library rem_days =
   let books = ref 0 in
   for i = 0 to Array.length contents - 1 do
     if !books < max_books && not contents.(i).selected then begin
-      score := contents.(i).score + !score;
+      score := (contents.(i).score * 10) / contents.(i).sharing + !score;
       incr books;
     end
   done;
-  !score
+  !score / library.signup_time
 
 let convert_library library days =
   let score = library_score library days in
@@ -147,23 +147,31 @@ let simulation_step problem =
       Log.debug (fun fmt -> fmt "next library found");
       problem.next_signup_in <- lib.library.signup_time;
       lib.signed_up_at <- problem.cur_day + lib.library.signup_time;
-      problem.signed_libraries <- lib :: problem.signed_libraries
+      problem.signed_libraries <- problem.signed_libraries @ [lib]
     | None -> problem.next_signup_in <- 1000000
   end
     
-let rec solve_problem problem =
+let rec solve_problem problem steps =
   let rem_days = problem.problem.days - problem.cur_day in
   Log.debug (fun fmt -> fmt "day %i/%i" problem.cur_day problem.problem.days);
   if rem_days > 0 then begin
     simulation_step problem;
-    solve_problem problem
+    let steps =
+      if steps >= steps_per_update then begin
+        update_scores problem;
+        1
+      end else
+        steps + 1
+    in
+    solve_problem problem steps
   end
 
 let build_solution problem =
   List.map (fun lib -> (lib.library, lib.scanned)) problem.signed_libraries
+  |> List.filter (fun (_, books) -> books <> [])
 
 let solve problem =
   let problem = convert_problem problem in
-  solve_problem problem;
+  solve_problem problem 0;
   Log.debug (fun fmt -> fmt "solution found");
   build_solution problem
